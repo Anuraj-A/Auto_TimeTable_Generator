@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Teachers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary-color: #4A90E2; /* Modern Blue */
+            --primary-dark: #357ABD;
+            --secondary-color: #6c757d;
+            --background-light: #F4F7FC; /* Very light, soft background */
+            --background-card: #ffffff; /* White for content cards */
+            --text-dark: #34495E; /* Darker, sophisticated text */
+            --text-light: #ffffff;
+            --border-color: #DDE2EC; /* Softer border */
+            --success-bg: #D4EDDA;
+            --success-text: #155724;
+            --danger-color: #dc3545; /* For delete actions */
+            --danger-dark: #c82333;
+            --error-bg: #f8d7da; /* Light red for errors */
+            --error-text: #721c24; /* Dark red for errors */
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --card-shadow: rgba(0, 0, 0, 0.08); /* Lighter, subtle shadow */
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 95%;
+            background-color: var(--background-card);
+            padding: 40px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 8px 25px var(--card-shadow);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.8em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            font-size: 0.9em;
+            color: var(--primary-color);
+        }
+
+        h2 {
+            margin-top: 30px;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        /* Form Layout */
+        .form-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .form-card {
+            flex: 1;
+            min-width: 320px;
+            background-color: var(--background-light);
+            padding: 30px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        .form-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-size: 1.6em;
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1em;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            outline: none;
+        }
+
+        button[type="submit"] {
+            padding: 14px 20px;
+            color: var(--text-light);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: background-color var(--transition-speed) ease, transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Specific button styles */
+        .add-button {
+            background-color: var(--primary-color);
+        }
+
+        .add-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .delete-button {
+            background-color: var(--danger-color);
+        }
+
+        .delete-button:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 25px;
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: 0 2px 10px var(--card-shadow);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+        }
+        
+        th:first-child {
+            border-top-left-radius: var(--border-radius-md);
+        }
+        th:last-child {
+            border-top-right-radius: var(--border-radius-md);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--background-light);
+        }
+
+        tr:hover {
+            background-color: #EBF2FA;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Generic Message Box Styling */
+        .message-box {
+            padding: 15px 20px;
+            border-radius: var(--border-radius-sm);
+            margin: 25px 0;
+            text-align: center;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 1;
+            transition: opacity var(--transition-speed) ease-out, transform var(--transition-speed) ease-out;
+        }
+
+        .message-box.success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid rgba(21, 87, 36, 0.2);
+        }
+        .message-box.success i {
+            color: var(--success-text);
+        }
+
+        .message-box.error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid rgba(114, 28, 36, 0.2);
+        }
+        .message-box.error i {
+            color: var(--error-text);
+        }
+
+
+        /* Back to Dashboard Link */
+        .back-link {
+            display: inline-flex;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            transition: background-color var(--transition-speed) ease, transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: 500;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-link:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-link:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                width: 100%;
+                padding: 25px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 25px;
+            }
+            h1 i {
+                font-size: 0.8em;
+            }
+
+            .form-section {
+                flex-direction: column;
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+
+            .form-card {
+                min-width: unset;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.6em;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }
+
+            th, td {
+                padding: 14px;
+                font-size: 0.9em;
+            }
+            
+            th:first-child, th:last-child {
+                border-radius: 0;
+            }
+
+            .message-box {
+                padding: 12px 15px;
+                font-size: 0.9em;
+                margin: 15px 0;
+            }
+
+            .back-link {
+                padding: 10px 20px;
+                font-size: 0.95em;
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.3em;
+                padding-bottom: 8px;
+            }
+            input[type="text"], button[type="submit"] {
+                font-size: 0.9em;
+                padding: 12px;
+            }
+            th, td {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-users-cog"></i> Manage Teachers</h1>
+
+        <div class="form-section">
+            <div class="form-card">
+                <h2><i class="fas fa-user-plus"></i> Add New Teacher</h2>
+                <form method="POST" action="{{ url_for('modify_teacher') }}">
+                    <input type="text" name="name" placeholder="Teacher's Full Name" required aria-label="Teacher's Full Name">
+                    <input type="text" name="subject" placeholder="Main Subject Taught (e.g., Math, Science)" required aria-label="Main Subject Taught">
+                    <button type="submit" class="add-button"><i class="fas fa-plus-circle"></i> Add Teacher</button>
+                </form>
+            </div>
+
+            <div class="form-card">
+                <h2><i class="fas fa-user-minus"></i> Delete Teacher</h2>
+                <form method="POST" action="{{ url_for('modify_teacher') }}">
+                    <input type="text" name="delete_name" placeholder="Full Name of Teacher to Delete" required aria-label="Full Name of Teacher to Delete">
+                    <button type="submit" class="delete-button"><i class="fas fa-minus-circle"></i> Delete Teacher</button>
+                </form>
+            </div>
+        </div>
+
+        {% if success_message %}
+            <div id="status-message" class="message-box success">
+                <i class="fas fa-check-circle"></i> {{ success_message }}
+            </div>
+        {% elif error_message %}
+            <div id="status-message" class="message-box error">
+                <i class="fas fa-exclamation-circle"></i> {{ error_message }}
+            </div>
+        {% endif %}
+
+        <h2><i class="fas fa-chalkboard-teacher"></i> Current Teachers List</h2>
+        {% if teachers %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Teacher's Name</th>
+                        <th>Subject</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                        <tr>
+                            <td>{{ teacher[0] }}</td>
+                            <td>{{ teacher[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align: center; padding: 25px; background-color: var(--background-light); border-radius: var(--border-radius-md); color: var(--secondary-color); border: 1px dashed var(--border-color);">
+                <i class="fas fa-info-circle" style="margin-right: 8px;"></i> No teachers registered yet. Use the form above to add one!
+            </p>
+        {% endif %}
+
+        <a href="{{ url_for('dashboard') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        // Optional: Hide status messages (success/error) after a few seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusMessage = document.getElementById('status-message');
+            if (statusMessage && statusMessage.textContent.trim() !== '') {
+                statusMessage.style.display = 'flex';
+                statusMessage.style.opacity = '1';
+                statusMessage.style.transform = 'translateY(0)';
+
+                setTimeout(() => {
+                    statusMessage.style.opacity = '0';
+                    statusMessage.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        statusMessage.style.display = 'none';
+                    }, 500);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>

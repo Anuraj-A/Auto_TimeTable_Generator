@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* --- CSS Variables (consistent with other pages) --- */
+        :root {
+            --primary-color: #4A90E2; /* Modern blue */
+            --primary-dark: #357ABD;
+            --secondary-color: #6c757d;
+            --background-light: #F4F7FC; /* Very light, soft background */
+            --background-dark: #E0E6F0; /* Slightly darker for cards/sections */
+            --background-card: #ffffff; /* White for content cards */
+            --text-dark: #34495E; /* Darker, sophisticated text */
+            --text-light: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.08); /* Lighter, subtle shadow */
+            --border-color: #DDE2EC; /* Softer border */
+            --success-bg: #D4EDDA;
+            --success-text: #155724;
+            --info-bg: #CCE5FF; /* Info notification background */
+            --info-text: #004085; /* Info notification text */
+            --error-bg: #f8d7da; /* Light red for errors */
+            --error-text: #721c24; /* Dark red for errors */
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --transition-speed: 0.3s; /* Global transition speed */
+        }
+
+        /* --- Global Body Styling --- */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* --- Dashboard Container --- */
+        .dashboard-container {
+            max-width: 1280px;
+            width: 92%;
+            margin: 30px auto;
+            padding: 40px;
+            background-color: var(--background-card);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 8px 25px var(--card-shadow);
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .user-welcome {
+            font-size: 1.15em;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        /* --- Main Navigation --- */
+        nav.main-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 15px 20px;
+            background-color: var(--background-dark);
+            border-radius: var(--border-radius-md);
+            justify-content: flex-start;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        nav.main-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 18px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            border-radius: var(--border-radius-sm);
+            white-space: nowrap;
+        }
+
+        nav.main-nav a i {
+            margin-right: 10px;
+            font-size: 1.15em;
+            color: var(--primary-color);
+        }
+
+        nav.main-nav a:hover {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        nav.main-nav a:hover i {
+            color: var(--text-light);
+        }
+
+        nav.main-nav a:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* --- Search Bar --- */
+        .search-bar {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: calc(100% - 70px); /* Adjusted for icon and padding */
+            padding: 14px 20px 14px 50px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1.05em;
+            box-sizing: border-box;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            background-color: var(--background-dark);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--secondary-color);
+            opacity: 0.8;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            outline: none;
+            background-color: var(--background-card);
+        }
+
+        .search-bar i.fa-search {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            pointer-events: none;
+        }
+
+        /* --- Notification --- */
+        .notification {
+            background-color: var(--info-bg);
+            color: var(--info-text);
+            padding: 18px 25px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 40px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(0, 64, 133, 0.2);
+        }
+        .notification i {
+            font-size: 1.5em;
+            color: var(--info-text);
+        }
+        .notification strong {
+            font-weight: 700;
+        }
+
+        /* --- Section Headings --- */
+        h2 {
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            font-weight: 700;
+        }
+
+        /* --- Statistics Grid --- */
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--background-card);
+            padding: 30px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 4px 15px var(--card-shadow);
+            text-align: center;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-speed) ease-out;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .stat-card p {
+            font-size: 3.2em;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* --- Recent Activities --- */
+        .recent-activities {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 4px 15px var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .recent-activities h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .recent-activities ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .recent-activities li {
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 1em;
+            color: var(--text-dark);
+        }
+
+        .recent-activities li:last-child {
+            border-bottom: none;
+        }
+
+        .recent-activities li i {
+            color: var(--primary-color);
+            font-size: 1.1em;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 25px;
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            background-color: var(--background-dark);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Generic Message Box Styling */
+        .message-box {
+            padding: 15px 20px;
+            border-radius: var(--border-radius-sm);
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 1;
+            transition: opacity var(--transition-speed) ease-out, transform var(--transition-speed) ease-out;
+        }
+
+        .message-box.error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid rgba(114, 28, 36, 0.2);
+        }
+        .message-box.error i {
+            color: var(--error-text);
+        }
+
+        /* --- Media Queries for Responsiveness --- */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                width: 95%;
+                padding: 30px;
+            }
+            header h1 {
+                font-size: 2.2em;
+            }
+            .notification {
+                padding: 15px 20px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            .statistics {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+            .stat-card h3 {
+                font-size: 1.15em;
+            }
+            .stat-card p {
+                font-size: 2.8em;
+            }
+            .recent-activities h3 {
+                font-size: 1.6em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                margin: 20px auto;
+                padding: 25px;
+            }
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            .user-welcome {
+                font-size: 1em;
+            }
+            nav.main-nav {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            nav.main-nav a {
+                justify-content: flex-start;
+                padding: 10px 15px;
+            }
+            .search-bar input {
+                padding: 12px 15px 12px 45px;
+            }
+            .search-bar i.fa-search {
+                left: 15px;
+            }
+            .notification {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+                padding: 12px 15px;
+            }
+            .notification i {
+                margin-bottom: 5px;
+            }
+            h2 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+            .statistics {
+                grid-template-columns: 1fr;
+            }
+            .stat-card {
+                padding: 25px;
+            }
+            .stat-card p {
+                font-size: 2.5em;
+            }
+            .recent-activities h3 {
+                font-size: 1.4em;
+            }
+            .recent-activities li {
+                padding: 10px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-container {
+                margin: 15px auto;
+                padding: 15px;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            nav.main-nav a {
+                font-size: 0.95em;
+            }
+            .search-bar input {
+                font-size: 0.95em;
+            }
+            .notification {
+                font-size: 0.9em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+            .stat-card p {
+                font-size: 2.2em;
+            }
+            .recent-activities li {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+            <div class="user-welcome">Welcome, <strong>{{ user }}</strong>!</div>
+        </header>
+
+        {% if error_message %}
+            <div id="status-message" class="message-box error">
+                <i class="fas fa-exclamation-circle"></i> {{ error_message }}
+            </div>
+        {% endif %}
+
+        <nav class="main-nav">
+            <a href="{{ url_for('modify_teacher') }}"><i class="fas fa-user-plus"></i> Modify Teacher</a>
+            <a href="{{ url_for('view_generate_timetable_page') }}"><i class="fas fa-calendar-plus"></i> Generate Timetable</a>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search teachers, classes, or activities..." id="searchInput">
+        </div>
+
+        <div class="notification">
+            <i class="fas fa-bell"></i>
+            <strong>Heads Up:</strong> You have an upcoming timetable generation deadline!
+        </div>
+
+        <h2><i class="fas fa-chart-line"></i> Overview</h2>
+        <div class="statistics">
+            <div class="stat-card">
+                <h3>Teachers Registered</h3>
+                <p>{{ number_of_teachers }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Last Timetable Generated</h3>
+                <p>{{ last_generated_timetable }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active Classes</h3>
+                <p>15</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Approvals</h3>
+                <p>2</p>
+            </div>
+        </div>
+
+        <div class="recent-activities">
+            <h3><i class="fas fa-history"></i> Recent Activities</h3>
+            <ul>
+                <li><i class="fas fa-user-check"></i> Added Teacher:<strong>John Doe</strong></li>
+                <li><i class="fas fa-calendar-check"></i> Timetable generated:<strong>2025-05-28</strong></li>
+                <li><i class="fas fa-user-times"></i> Deleted Teacher:<strong>Jane Smith</strong></li>
+                <li><i class="fas fa-book-open"></i> Updated course:<strong>Math 101</strong></li>
+                <li><i class="fas fa-users-class"></i> New student batch enrolled</li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        &copy; 2025 Timetable Management System. All rights reserved.
+    </footer>
+
+    <script>
+        // Basic search functionality (client-side filter for recent activities)
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let input = this.value.toLowerCase();
+            let activities = document.querySelectorAll('.recent-activities li');
+
+            activities.forEach(function(activity) {
+                let text = activity.textContent.toLowerCase();
+                if (text.includes(input)) {
+                    activity.style.display = ''; // Show item
+                } else {
+                    activity.style.display = 'none'; // Hide item
+                }
+            });
+        });
+
+        // Optional: Hide status message after a few seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusMessage = document.getElementById('status-message');
+            if (statusMessage && statusMessage.textContent.trim() !== '') {
+                statusMessage.style.display = 'flex';
+                statusMessage.style.opacity = '1';
+                statusMessage.style.transform = 'translateY(0)';
+
+                setTimeout(() => {
+                    statusMessage.style.opacity = '0';
+                    statusMessage.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        statusMessage.style.display = 'none';
+                    }, 500);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
